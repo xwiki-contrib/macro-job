@@ -28,7 +28,7 @@
     <groupId>org.xwiki.contrib</groupId>
     <version>1.0-SNAPSHOT</version>
   </parent>
-  <artifactId>macro-job-macro</artifactId>
+  <artifactId>macro-job</artifactId>
   <name>Job Macro</name>
   <description>Job Macro allows running asynchronous scripts with progression bar and logs</description>
   <properties>

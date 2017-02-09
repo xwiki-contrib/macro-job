@@ -79,7 +79,7 @@
     </repository>
   </distributionManagement>
   <modules>
-    <module>macro-job-macro</module>
+    <module>macro-job</module>
     <module>macro-job-ui</module>
   </modules>
 </project>
