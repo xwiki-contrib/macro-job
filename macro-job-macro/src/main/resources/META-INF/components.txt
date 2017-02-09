@@ -1,0 +1,5 @@
+org.xwiki.contrib.jobmacro.internal.JobMacro
+org.xwiki.contrib.jobmacro.internal.JobMacroJob
+org.xwiki.contrib.jobmacro.internal.context.ExecutionContextCopier
+org.xwiki.contrib.jobmacro.internal.context.XWikiContextCopier
+org.xwiki.contrib.jobmacro.internal.context.XWikiRequestCopier

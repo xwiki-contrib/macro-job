@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ See the NOTICE file distributed with this work for additional
+  ~ information regarding copyright ownership.
+  ~
+  ~ This is free software; you can redistribute it and/or modify it
+  ~ under the terms of the GNU Lesser General Public License as
+  ~ published by the Free Software Foundation; either version 2.1 of
+  ~ the License, or (at your option) any later version.
+  ~
+  ~ This software is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this software; if not, write to the Free
+  ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+  ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+  -->
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.3" reference="JobMacro.JobProgressMacro" locale="">
+  <web>JobMacro</web>
+  <name>JobProgressMacro</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <creationDate>1486579635000</creationDate>
+  <parent>xwiki:JobMacro.WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <date>1486635412000</date>
+  <contentUpdateDate>1486635175000</contentUpdateDate>
+  <version>1.1</version>
+  <title>Job Progress Macro</title>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <content>{{template name="job_macros.vm"/}}
+
+{{velocity output="false"}}
+#macro(jobMessage $jobStatus)
+  #set($finished = $jobStatus.state.name() == 'FINISHED')
+  #if ($finished)
+    #if ($jobStatus.log.getLogs('ERROR').isEmpty())
+       &lt;div class="box successmessage"&gt;
+         $services.localization.render('jobmacro.log.message.success')
+       &lt;/div&gt;
+    #else
+       &lt;div class="box errormessage"&gt;
+         $services.localization.render('jobmacro.log.message.errors')
+       &lt;/div&gt;
+    #end
+  #end
+#end
+{{/velocity}}
+
+{{velocity wiki="false"}}
+#if ($xcontext.action == 'get')
+  #set($jobStatus = $services.job.getJobStatus($request.jobid.split('/')))
+  #getJobStatusJSON($jobStatus $json)
+  #set ($json.message = "#jobMessage($jobStatus)")
+  $response.setContentType('application/json')
+  $jsontool.serialize($json)
+#end
+{{/velocity}}
+
+{{velocity}}
+#if ($xcontext.action != 'get')
+{{info}}This is a helper macro for displaying log progress used by the Job Macro.{{/info}}
+#end
+{{/velocity}}
+</content>
+  <object>
+    <name>JobMacro.JobProgressMacro</name>
+    <number>0</number>
+    <className>XWiki.JavaScriptExtension</className>
+    <guid>adeba971-ac9f-48ce-8637-c92fe540b074</guid>
+    <class>
+      <name>XWiki.JavaScriptExtension</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <cache>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <multiSelect>0</multiSelect>
+        <name>cache</name>
+        <number>5</number>
+        <prettyName>Caching policy</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>long|short|default|forbid</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </cache>
+      <code>
+        <contenttype>PureText</contenttype>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>code</name>
+        <number>2</number>
+        <prettyName>Code</prettyName>
+        <rows>20</rows>
+        <size>50</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </code>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>1</number>
+        <prettyName>Name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <parse>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType>yesno</displayType>
+        <name>parse</name>
+        <number>4</number>
+        <prettyName>Parse content</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </parse>
+      <use>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <multiSelect>0</multiSelect>
+        <name>use</name>
+        <number>3</number>
+        <prettyName>Use this extension</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>currentPage|onDemand|always</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </use>
+    </class>
+    <property>
+      <cache>long</cache>
+    </property>
+    <property>
+      <code>require.config({
+  paths: {
+    JobRunner: "$!services.webjars.url('org.xwiki.platform:xwiki-platform-job-webjar', 'jobRunner.min')"
+  }
+});
+
+require(['jquery', 'JobRunner'], function($, JobRunner) {
+  'use strict';
+  var updateProgress = function(jobUI, job) {
+    var percent = Math.floor((job.progress.offset || 0) * 100);
+    jobUI.find('.ui-progress-bar').css('width', percent + '%');
+    var jobLog = job.log.items || [];
+    if (jobLog.size() &gt; 0) {
+      jobUI.find('.ui-progress-message').html(jobLog[jobLog.size() - 1].renderedMessage);
+    }
+  };
+
+  var updateLog = function(jobUI, job) {
+    var jobLog = job.log.items || [];
+    var jobLogUI = jobUI.find('.log');
+    if (job.log.offset === 0) {
+      jobLogUI.html('');
+    }
+    jobLogUI.find('.log-item-loading').removeClass('log-item-loading');
+    $.each(jobLog, function(index, item) {
+      var classNames = ['log-item', 'log-item-' + item.level];
+      if (job.state !== 'FINISHED' &amp;&amp; index === jobLog.size() - 1) {
+        classNames.push('log-item-loading');
+      }
+      $(document.createElement('li')).addClass(classNames.join(' ')).html(item.renderedMessage).appendTo(jobLogUI);
+    })
+  };
+
+  var updateStatus = function(job) {
+    var jobUI = $(this);
+    updateProgress(jobUI, job);
+    updateLog(jobUI, job);
+  };
+
+  var notifyJobDone = function(job) {
+    var jobUI = $(this);
+    jobUI.find('.ui-progress').replaceWith(job.message);
+  };
+
+  var notifyConnectionFailure = function() {
+  };
+
+  $('.job-status').has('.ui-progress').each(function() {
+    var jobStatus = $(this);
+    var url = jobStatus.attr('data-url');
+    if (url !== '') {
+      var jobLog = jobStatus.find('.log');
+      JobRunner({
+        createStatusRequest: function() {
+          return {
+            url: url,
+            data: {
+              'logOffset': jobLog.find('.log-item').size()
+            }
+          };
+        }
+      }).resume()
+        .progress($.proxy(updateStatus, this))
+        .done($.proxy(notifyJobDone, this))
+        .fail($.proxy(notifyConnectionFailure, this));
+    }
+  });
+});</code>
+    </property>
+    <property>
+      <name>job.js fixed</name>
+    </property>
+    <property>
+      <parse>1</parse>
+    </property>
+    <property>
+      <use>currentPage</use>
+    </property>
+  </object>
+  <object>
+    <name>JobMacro.JobProgressMacro</name>
+    <number>0</number>
+    <className>XWiki.WikiMacroClass</className>
+    <guid>41c59858-76d7-4cb1-98d7-e459de5a5a9c</guid>
+    <class>
+      <name>XWiki.WikiMacroClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <code>
+        <disabled>0</disabled>
+        <editor>Text</editor>
+        <name>code</name>
+        <number>9</number>
+        <prettyName>Macro code</prettyName>
+        <rows>20</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </code>
+      <contentDescription>
+        <contenttype>PureText</contenttype>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>contentDescription</name>
+        <number>8</number>
+        <prettyName>Content description (Not applicable for "No content" type)</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </contentDescription>
+      <contentType>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <multiSelect>0</multiSelect>
+        <name>contentType</name>
+        <number>7</number>
+        <prettyName>Macro content type</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator>|</separator>
+        <separators>|</separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>Optional|Mandatory|No content</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </contentType>
+      <defaultCategory>
+        <disabled>0</disabled>
+        <name>defaultCategory</name>
+        <number>4</number>
+        <prettyName>Default category</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </defaultCategory>
+      <description>
+        <contenttype>PureText</contenttype>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>description</name>
+        <number>3</number>
+        <prettyName>Macro description</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </description>
+      <id>
+        <disabled>0</disabled>
+        <name>id</name>
+        <number>1</number>
+        <prettyName>Macro id</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </id>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>2</number>
+        <prettyName>Macro name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <supportsInlineMode>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType>yesno</displayType>
+        <name>supportsInlineMode</name>
+        <number>5</number>
+        <prettyName>Supports inline mode</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </supportsInlineMode>
+      <visibility>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <multiSelect>0</multiSelect>
+        <name>visibility</name>
+        <number>6</number>
+        <prettyName>Macro visibility</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator>|</separator>
+        <separators>|</separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>Current User|Current Wiki|Global</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </visibility>
+    </class>
+    <property>
+      <code>{{template name="job_macros.vm"/}}
+
+{{velocity output="false"}}
+#set ($discard = $xwiki.jsx.use('JobMacro.JobProgressMacro'))
+{{/velocity}}
+
+{{velocity}}
+  #set($jobStatus = $services.job.getJobStatus($xcontext.macro.params.jobid.split('/')))
+  #if($jobStatus)
+
+  {{html clean="false"}}
+  &lt;style&gt;
+    .job-status .box {
+       margin-bottom: 0px;
+       padding: 4px 10px 5px 10px;
+       min-height: 20px;
+    }
+  &lt;/style&gt;
+  &lt;div&gt;
+    #set ($jobStatusURL = $xwiki.getURL('JobMacro.JobProgressMacro', 'get', $escapetool.url({ 'outputSyntax': 'plain', 'jobid': $xcontext.macro.params.jobid })))
+    &lt;div class="xcontent job-status" data-url="$jobStatusURL"&gt;
+      #set($finished = $jobStatus.state.name() == 'FINISHED')
+      #if (!$finished)
+        #displayJobProgressBar($jobStatus)
+        #if ($jobStatus &amp;&amp; $jobStatus.log.isEmpty() &amp;&amp; $jobStatus.state.name() == 'NONE')
+          &lt;p class="ui-progress-message"&gt;
+            $services.localization.render('jobmacro.log.message.waiting')
+          &lt;/p&gt;
+        #end
+      #else
+        #if ($jobStatus.log.getLogs('ERROR').isEmpty())
+          &lt;div class="box successmessage"&gt;
+            $services.localization.render('jobmacro.log.message.success')
+          &lt;/div&gt;
+        #else
+          &lt;div class="box errormessage"&gt;
+            $services.localization.render('jobmacro.log.message.errors')
+          &lt;/div&gt;
+        #end
+      #end
+      #displayJobStatusLog($jobStatus true)
+    &lt;/div&gt;
+  &lt;/div&gt;
+  {{/html}}
+
+  #end
+{{/velocity}}</code>
+    </property>
+    <property>
+      <contentDescription/>
+    </property>
+    <property>
+      <contentType>No content</contentType>
+    </property>
+    <property>
+      <defaultCategory>Internal</defaultCategory>
+    </property>
+    <property>
+      <description>Provide a UI to follow asynchronous job progression</description>
+    </property>
+    <property>
+      <id>jobprogress</id>
+    </property>
+    <property>
+      <name>Job Progress</name>
+    </property>
+    <property>
+      <supportsInlineMode>0</supportsInlineMode>
+    </property>
+    <property>
+      <visibility>Current Wiki</visibility>
+    </property>
+  </object>
+  <object>
+    <name>JobMacro.JobProgressMacro</name>
+    <number>0</number>
+    <className>XWiki.WikiMacroParameterClass</className>
+    <guid>7cd7a9c0-88c6-4169-b97d-4a0e2d348b0f</guid>
+    <class>
+      <name>XWiki.WikiMacroParameterClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <defaultValue>
+        <disabled>0</disabled>
+        <name>defaultValue</name>
+        <number>4</number>
+        <prettyName>Parameter default value</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </defaultValue>
+      <description>
+        <contenttype/>
+        <disabled>0</disabled>
+        <name>description</name>
+        <number>2</number>
+        <prettyName>Parameter description</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </description>
+      <mandatory>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType>yesno</displayType>
+        <name>mandatory</name>
+        <number>3</number>
+        <prettyName>Parameter mandatory</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </mandatory>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>1</number>
+        <prettyName>Parameter name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+    </class>
+    <property>
+      <defaultValue/>
+    </property>
+    <property>
+      <description>Identifier of the job for which the status is requested</description>
+    </property>
+    <property>
+      <mandatory>1</mandatory>
+    </property>
+    <property>
+      <name>jobid</name>
+    </property>
+  </object>
+</xwikidoc>
