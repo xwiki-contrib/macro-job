@@ -22,6 +22,7 @@ package org.xwiki.contrib.jobmacro.internal;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.script.ScriptContext;
 
 import org.apache.velocity.VelocityContext;
 import org.xwiki.component.annotation.Component;
@@ -32,6 +33,7 @@ import org.xwiki.job.internal.AbstractJob;
 import org.xwiki.job.internal.DefaultJobStatus;
 import org.xwiki.logging.marker.TranslationMarker;
 import org.xwiki.rendering.macro.MacroContentParser;
+import org.xwiki.script.ScriptContextManager;
 import org.xwiki.velocity.VelocityManager;
 
 /**
@@ -51,8 +53,17 @@ public class JobMacroJob extends AbstractJob<JobMacroRequest, DefaultJobStatus<J
 
     private static final TranslationMarker LOG_EXCEPTION = new TranslationMarker("job.log.exception");
 
+    private static final String JOB_ID_VARIABLE = "jobId";
+
+    private static final String GROUP_PATH_VARIABLE = "groupPath";
+
+    private static final String PROGRESS_VARIABLE = "progress";
+
     @Inject
     private Execution execution;
+
+    @Inject
+    private ScriptContextManager scriptContextManager;
 
     @Inject
     private VelocityManager velocityManager;
@@ -60,14 +71,6 @@ public class JobMacroJob extends AbstractJob<JobMacroRequest, DefaultJobStatus<J
     @Inject
     private MacroContentParser contentParser;
 
-    /**
-     * Default constructor.
-     */
-    public JobMacroJob()
-    {
-        super();
-        this.initExecutionContext = false;
-    }
 
     @Override
     public JobGroupPath getGroupPath()
@@ -82,28 +85,28 @@ public class JobMacroJob extends AbstractJob<JobMacroRequest, DefaultJobStatus<J
     }
 
     @Override
-    protected void runInContext() {
-        Throwable error = null;
-        this.execution.setContext(request.getExecutionContext());
-
+    public void run()
+    {
         try {
-            this.jobStarting();
-            this.runInternal();
-        } catch (Throwable e) {
-            this.logger.error(LOG_EXCEPTION, "Exception thrown during job execution", e);
-            error = e;
+            this.execution.setContext(request.getExecutionContext());
+            runInContext();
         } finally {
-            this.jobFinished(error);
+            execution.removeContext();
         }
     }
 
     @Override
     protected void runInternal() throws Exception
     {
+        ScriptContext scontext = scriptContextManager.getScriptContext();
+        scontext.setAttribute(JOB_ID_VARIABLE, this.request.getId(), ScriptContext.ENGINE_SCOPE);
+        scontext.setAttribute(GROUP_PATH_VARIABLE, this.request.getGroupPath(), ScriptContext.ENGINE_SCOPE);
+        scontext.setAttribute(PROGRESS_VARIABLE, this.progressManager, ScriptContext.ENGINE_SCOPE);
+
         VelocityContext vcontext = velocityManager.getVelocityContext();
-        vcontext.put("jobId", this.request.getId());
-        vcontext.put("groupPath", this.request.getGroupPath());
-        vcontext.put("progress", this.progressManager);
+        vcontext.put(JOB_ID_VARIABLE, this.request.getId());
+        vcontext.put(GROUP_PATH_VARIABLE, this.request.getGroupPath());
+        vcontext.put(PROGRESS_VARIABLE, this.progressManager);
 
         this.contentParser.parse(request.getContent(), request.getTransformationContext(), true, false);
     }
