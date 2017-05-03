@@ -22,6 +22,7 @@ package org.xwiki.contrib.jobmacro.internal.context;
 
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.xpn.xwiki.web.XWikiServletRequestStub;
@@ -37,8 +38,18 @@ public class XWikiServletRequestStubWithParameters extends XWikiServletRequestSt
 
     XWikiServletRequestStubWithParameters(Map<String, String[]> parameters)
     {
-        this.parameters = (parameters != null) ? Collections.unmodifiableMap(parameters)
-            : Collections.<String, String[]>emptyMap();
+        if (parameters != null && parameters.size() > 0) {
+            Map<String, String[]> map = new HashMap<String, String[]>(parameters.size());
+            for (Map.Entry<String, String[]> entry : parameters.entrySet()) {
+                int len = entry.getValue().length;
+                String[] value = new String[entry.getValue().length];
+                System.arraycopy(entry.getValue(), 0, value, 0, len);
+                map.put(entry.getKey(), value);
+            }
+            this.parameters = Collections.unmodifiableMap(map);
+        } else {
+            this.parameters = Collections.<String, String[]>emptyMap();
+        }
     }
 
     @Override
