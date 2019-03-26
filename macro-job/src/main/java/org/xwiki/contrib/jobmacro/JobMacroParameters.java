@@ -21,8 +21,13 @@
 package org.xwiki.contrib.jobmacro;
 
 import org.xwiki.contrib.jobmacro.internal.JobMacro;
+import org.xwiki.contrib.jobmacro.internal.JobMacroRequest;
 import org.xwiki.properties.annotation.PropertyDescription;
 import org.xwiki.properties.annotation.PropertyMandatory;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Parameters for the {@link JobMacro} Macro.
@@ -31,6 +36,7 @@ import org.xwiki.properties.annotation.PropertyMandatory;
  */
 public class JobMacroParameters
 {
+
     /**
      * @see #getJobType()
      */
@@ -45,6 +51,11 @@ public class JobMacroParameters
      * @see #getGroupPath()
      */
     private String groupPath;
+
+    /**
+     * @see #getLogLevels()
+     */
+    private String loglevels;
 
     /**
      * @see #getGroupPath()
@@ -73,6 +84,14 @@ public class JobMacroParameters
     public String getGroupPath()
     {
         return this.groupPath;
+    }
+
+    /**
+     * @return the groupPath parameter
+     */
+    public String getLogLevels()
+    {
+        return this.loglevels;
     }
 
     /**
@@ -112,6 +131,15 @@ public class JobMacroParameters
     }
 
     /**
+     * @param loglevels the loglevels as a lowercase comma separated list
+     */
+    @PropertyDescription("Elements to serialize in the logs as a comma separated list (progress, logs, request)")
+    public void setLogLevels(String loglevels)
+    {
+        this.loglevels = loglevels;
+    }
+
+    /**
      * @param start if true, restart the job even if existing logs exists.
      */
     @PropertyDescription("Start the job if it is not running. Default to false. (Wiki syntax supported)")
@@ -119,5 +147,4 @@ public class JobMacroParameters
     {
         this.start = start;
     }
-
 }

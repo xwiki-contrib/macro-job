@@ -21,9 +21,13 @@
 package org.xwiki.contrib.jobmacro.internal;
 
 import org.xwiki.context.ExecutionContext;
+import org.xwiki.contrib.jobmacro.internal.JobMacro.LOGLEVELS;
 import org.xwiki.job.AbstractRequest;
 import org.xwiki.job.JobGroupPath;
 import org.xwiki.rendering.transformation.MacroTransformationContext;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Job Request for the {@link JobMacroJob}.
@@ -32,9 +36,13 @@ import org.xwiki.rendering.transformation.MacroTransformationContext;
  */
 public class JobMacroRequest extends AbstractRequest
 {
+    private static final long serialVersionUID = 1L;
+
     private String content;
 
     private JobGroupPath groupPath;
+
+    private List<LOGLEVELS> loglevels;
 
     private transient ExecutionContext executionContext;
 
@@ -106,5 +114,52 @@ public class JobMacroRequest extends AbstractRequest
     public void setTransformationContext(MacroTransformationContext transformationContext)
     {
         this.transformationContext = transformationContext;
+    }
+
+    /**
+     * Return the logging level.
+     */
+    public List<LOGLEVELS> getLogLevel()
+    {
+        return loglevels;
+    }
+
+    /**
+     * Set the logging level.
+     * @param levels a collection of enabled levels.
+     */
+    public void setLogLevel(List<LOGLEVELS> levels)
+    {
+        this.loglevels = levels;
+    }
+
+    /**
+     * Enable logging of the given information.
+     * @param level the level to activate
+     * @return true if the level has been enabled, false if it was already enabled
+     */
+    public boolean enableLogLevel(LOGLEVELS level)
+    {
+        if (this.loglevels == null) {
+            this.loglevels = new ArrayList<>();
+        }
+
+        if (!this.loglevels.contains(level)) {
+            return this.loglevels.add(level);
+        }
+        return false;
+    }
+
+    /**
+     * Disable logging of the given information.
+     * @param level the level to activate
+     * @return true if the level has been activated, false if it was already active
+     */
+    public boolean disableLogLevel(LOGLEVELS level)
+    {
+        if (level != null && this.loglevels != null && this.loglevels.contains(level)) {
+            return this.loglevels.remove(level);
+        }
+        return false;
     }
 }

@@ -27,14 +27,21 @@ import javax.script.ScriptContext;
 import org.apache.velocity.VelocityContext;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.context.Execution;
+import org.xwiki.job.AbstractJob;
 import org.xwiki.job.GroupedJob;
+import org.xwiki.job.Job;
 import org.xwiki.job.JobGroupPath;
-import org.xwiki.job.internal.AbstractJob;
-import org.xwiki.job.internal.DefaultJobStatus;
+import org.xwiki.job.event.JobFinishedEvent;
+import org.xwiki.job.event.JobStartedEvent;
+import org.xwiki.job.event.status.JobStatus;
+import org.xwiki.logging.marker.BeginTranslationMarker;
+import org.xwiki.logging.marker.EndTranslationMarker;
 import org.xwiki.logging.marker.TranslationMarker;
 import org.xwiki.rendering.macro.MacroContentParser;
 import org.xwiki.script.ScriptContextManager;
 import org.xwiki.velocity.VelocityManager;
+
+import java.util.Date;
 
 /**
  * Job executed by the JobMacro.
@@ -43,7 +50,7 @@ import org.xwiki.velocity.VelocityManager;
  */
 @Component
 @Named(JobMacroJob.JOBTYPE)
-public class JobMacroJob extends AbstractJob<JobMacroRequest, DefaultJobStatus<JobMacroRequest>>
+public class JobMacroJob extends AbstractJob<JobMacroRequest, JobMacroStatusWrapper>
     implements GroupedJob
 {
     /**
@@ -51,7 +58,15 @@ public class JobMacroJob extends AbstractJob<JobMacroRequest, DefaultJobStatus<J
      */
     public static final String JOBTYPE = "macrojob";
 
-    private static final TranslationMarker LOG_EXCEPTION = new TranslationMarker("job.log.exception");
+    private static final BeginTranslationMarker LOG_BEGIN = new BeginTranslationMarker("job.log.begin");
+
+    private static final BeginTranslationMarker LOG_BEGIN_ID = new BeginTranslationMarker("job.log.beginWithId");
+
+    private static final EndTranslationMarker LOG_END = new EndTranslationMarker("job.log.end");
+
+    private static final EndTranslationMarker LOG_END_ID = new EndTranslationMarker("job.log.endWithId");
+
+    private static final TranslationMarker LOG_STATUS_STORE_FAILED = new TranslationMarker("job.log.status.store.failed");
 
     private static final String JOB_ID_VARIABLE = "jobId";
 
@@ -109,5 +124,94 @@ public class JobMacroJob extends AbstractJob<JobMacroRequest, DefaultJobStatus<J
         vcontext.put(PROGRESS_VARIABLE, this.progressManager);
 
         this.contentParser.parse(request.getContent(), request.getTransformationContext(), true, false);
+    }
+
+    @Override
+    protected JobMacroStatusWrapper createNewStatus(JobMacroRequest request)
+    {
+        Job currentJob = this.jobContext.getCurrentJob();
+        JobStatus currentJobStatus = currentJob != null ? currentJob.getStatus() : null;
+        return new JobMacroStatusWrapper(request, this.observationManager, this.loggerManager, currentJobStatus);
+    }
+
+    /**
+     * Called when the job is starting.
+     */
+    protected void jobStarting()
+    {
+        this.jobContext.pushCurrentJob(this);
+
+        this.observationManager.notify(new JobStartedEvent(getRequest().getId(), getType(), this.request), this);
+
+        this.status.setStartDate(new Date());
+        this.status.setState(JobStatus.State.RUNNING);
+
+        this.status.startListening();
+
+        if (getRequest().isVerbose()) {
+            if (getStatus().getRequest().getId() != null) {
+                this.logger.info(LOG_BEGIN_ID, "Starting job of type [{}] with identifier [{}]", getType(),
+                    getStatus().getRequest().getId());
+            } else {
+                this.logger.info(LOG_BEGIN, "Starting job of type [{}]", getType());
+            }
+        }
+    }
+
+    /**
+     * Called when the job is done.
+     *
+     * @param error the exception throw during execution of the job
+     */
+    protected void jobFinished(Throwable error)
+    {
+        this.lock.lock();
+
+        try {
+            this.status.setError(error);
+
+            // Give a chance to any listener to do custom action associated to the job
+            //this.observationManager.notify(new JobFinishingEvent(getRequest().getId(), getType(), this.request), this,
+            //    error);
+
+            if (getRequest().isVerbose()) {
+                if (getStatus().getRequest().getId() != null) {
+                    this.logger.info(LOG_END_ID, "Finished job of type [{}] with identifier [{}]", getType(),
+                        getStatus().getRequest().getId());
+                } else {
+                    this.logger.info(LOG_END, "Finished job of type [{}]", getType());
+                }
+            }
+
+            // Indicate when the job ended
+            this.status.setEndDate(new Date());
+
+            // Stop updating job status (progress, log, etc.)
+            this.status.stopListening();
+
+            // Update job state
+            this.status.setState(JobStatus.State.FINISHED);
+
+            // Release threads waiting for job being done
+            this.finishedCondition.signalAll();
+
+            // Remove the job from the current jobs context
+            this.jobContext.popCurrentJob();
+
+            // Store the job status
+            try {
+                if (this.request.getId() != null) {
+                    this.store.storeAsync(this.status);
+                }
+            } catch (Throwable t) {
+                this.logger.warn(LOG_STATUS_STORE_FAILED, "Failed to store job status [{}]", this.status, t);
+            }
+        } finally {
+            this.lock.unlock();
+
+            // Notify listener that job is fully finished
+            this.observationManager.notify(new JobFinishedEvent(getRequest().getId(), getType(), this.request), this,
+                error);
+        }
     }
 }

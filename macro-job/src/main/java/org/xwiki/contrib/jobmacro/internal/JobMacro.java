@@ -20,6 +20,7 @@
 
 package org.xwiki.contrib.jobmacro.internal;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -61,6 +62,18 @@ import org.xwiki.security.authorization.Right;
 @Named("job")
 public class JobMacro extends AbstractSignableMacro<JobMacroParameters>
 {
+    enum LOGLEVELS {
+        PROGRESS,
+        LOGS,
+        REQUEST;
+
+        @Override
+        public String toString()
+        {
+            return super.toString().toLowerCase();
+        }
+    }
+
     /**
      * The description of the macro.
      */
@@ -137,7 +150,8 @@ public class JobMacro extends AbstractSignableMacro<JobMacroParameters>
             && Boolean.parseBoolean(parseToPlainText(parameters.getStart(), context))) {
             try {
                 startJob(parseToPlainText(parameters.getJobType(), context), jobId,
-                    asList(parseToPlainText(parameters.getGroupPath(), context)), content, context);
+                    asList(parseToPlainText(parameters.getGroupPath(), context)), content, context,
+                    getLogLevelsAsList(parseToPlainText(parameters.getLogLevels(), context)));
             } catch (Exception e) {
                 throw new MacroExecutionException("Failed starting job", e);
             }
@@ -150,16 +164,18 @@ public class JobMacro extends AbstractSignableMacro<JobMacroParameters>
     }
 
     private void startJob(String jobType, List<String> jobId, List<String> groupPath, String content,
-        MacroTransformationContext context) throws MacroExecutionException, AccessDeniedException, JobException
+                          MacroTransformationContext context, List<LOGLEVELS> logLevels)
+        throws MacroExecutionException, AccessDeniedException, JobException
     {
         contextualAuthorizationManager.checkAccess(Right.PROGRAM);
 
         this.jobExecutor.execute(JobMacroJob.JOBTYPE,
-            getJobMacroRequest(jobType, jobId, groupPath, content, context));
+            getJobMacroRequest(jobType, jobId, groupPath, content, context, logLevels));
     }
 
     private JobMacroRequest getJobMacroRequest(String jobType, List<String> jobId, List<String> groupPath,
-        String content, MacroTransformationContext context)
+                                               String content, MacroTransformationContext context,
+                                               List<LOGLEVELS> logLevels)
     {
         ExecutionContext executionContext = this.execution.getContext();
         ExecutionContext clonedExecutionContext = this.executionContextCloner.copy(executionContext);
@@ -174,6 +190,7 @@ public class JobMacro extends AbstractSignableMacro<JobMacroParameters>
         request.setExecutionContext(clonedExecutionContext);
         request.setTransformationContext(context.clone());
         request.setProperty(PROPERTY_JOB_TYPE, jobType);
+        request.setLogLevel(logLevels);
         return request;
     }
 
@@ -187,5 +204,24 @@ public class JobMacro extends AbstractSignableMacro<JobMacroParameters>
         WikiPrinter printer = new DefaultWikiPrinter();
         this.plainTextBlockRenderer.render(this.contentParser.parse(param, context, true, false), printer);
         return printer.toString();
+    }
+
+    private List<LOGLEVELS> getLogLevelsAsList(String loglevels) {
+        String[] levels = loglevels.split("\\s*,\\s*");
+
+        List<LOGLEVELS> result = new ArrayList<>(levels.length);
+        for (String level : levels) {
+            try {
+                result.add(LOGLEVELS.valueOf(level.toUpperCase()));
+            } catch (Throwable t) {
+                // Ignored
+            }
+        }
+
+        if (result.size() == 0) {
+            result.addAll(Arrays.asList(LOGLEVELS.PROGRESS, LOGLEVELS.LOGS, LOGLEVELS.REQUEST));
+        }
+
+        return result;
     }
 }
