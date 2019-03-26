@@ -21,7 +21,7 @@
 package org.xwiki.contrib.jobmacro.internal;
 
 import org.xwiki.context.ExecutionContext;
-import org.xwiki.contrib.jobmacro.internal.JobMacro.LOGLEVELS;
+import org.xwiki.contrib.jobmacro.internal.JobMacro.SERIALIZE;
 import org.xwiki.job.AbstractRequest;
 import org.xwiki.job.JobGroupPath;
 import org.xwiki.rendering.transformation.MacroTransformationContext;
@@ -42,7 +42,7 @@ public class JobMacroRequest extends AbstractRequest
 
     private JobGroupPath groupPath;
 
-    private List<LOGLEVELS> loglevels;
+    private List<SERIALIZE> serialize;
 
     private transient ExecutionContext executionContext;
 
@@ -119,46 +119,46 @@ public class JobMacroRequest extends AbstractRequest
     /**
      * Return the logging level.
      */
-    public List<LOGLEVELS> getLogLevel()
+    public List<SERIALIZE> getSerialize()
     {
-        return loglevels;
+        return serialize;
     }
 
     /**
      * Set the logging level.
-     * @param levels a collection of enabled levels.
+     * @param serialize a collection of object enabled for serialization.
      */
-    public void setLogLevel(List<LOGLEVELS> levels)
+    public void setSerialize(List<SERIALIZE> serialize)
     {
-        this.loglevels = levels;
+        this.serialize = serialize;
     }
 
     /**
      * Enable logging of the given information.
-     * @param level the level to activate
+     * @param serialize the object to serialize
      * @return true if the level has been enabled, false if it was already enabled
      */
-    public boolean enableLogLevel(LOGLEVELS level)
+    public boolean enableSerialize(SERIALIZE serialize)
     {
-        if (this.loglevels == null) {
-            this.loglevels = new ArrayList<>();
+        if (this.serialize == null) {
+            this.serialize = new ArrayList<>();
         }
 
-        if (!this.loglevels.contains(level)) {
-            return this.loglevels.add(level);
+        if (!this.serialize.contains(serialize)) {
+            return this.serialize.add(serialize);
         }
         return false;
     }
 
     /**
      * Disable logging of the given information.
-     * @param level the level to activate
+     * @param serialize the object to remove from serialization
      * @return true if the level has been activated, false if it was already active
      */
-    public boolean disableLogLevel(LOGLEVELS level)
+    public boolean disableSerialize(SERIALIZE serialize)
     {
-        if (level != null && this.loglevels != null && this.loglevels.contains(level)) {
-            return this.loglevels.remove(level);
+        if (serialize != null && this.serialize != null && this.serialize.contains(serialize)) {
+            return this.serialize.remove(serialize);
         }
         return false;
     }

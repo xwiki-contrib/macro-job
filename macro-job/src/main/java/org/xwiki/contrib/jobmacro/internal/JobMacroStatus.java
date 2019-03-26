@@ -28,13 +28,48 @@ import java.util.Date;
 
 public class JobMacroStatus
 {
+    /**
+     * Job progress.
+     */
     public JobProgress progress;
+
+    /**
+     * Job logs.
+     */
     public LogQueue logs;
+
+    /**
+     * Job type.
+     */
     public String jobType = JobMacroJob.JOBTYPE;
+
+    /**
+     * Job state.
+     */
     public JobStatus.State state;
+
+    /**
+     * Job thrown exception.
+     */
     public Throwable error;
+
+    /**
+     * Job request.
+     */
     public JobMacroRequest request;
+
+    /**
+     * Job start date.
+     */
     public Date startDate;
+
+    /**
+     * Job end date.
+     */
     public Date endDate;
+
+    /**
+     * Job log isolation.
+     */
     public boolean isolated;
 }

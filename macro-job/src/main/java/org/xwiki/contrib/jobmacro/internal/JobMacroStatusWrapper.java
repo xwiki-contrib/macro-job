@@ -20,7 +20,7 @@
 
 package org.xwiki.contrib.jobmacro.internal;
 
-import org.xwiki.contrib.jobmacro.internal.JobMacro.LOGLEVELS;
+import org.xwiki.contrib.jobmacro.internal.JobMacro.SERIALIZE;
 import org.xwiki.job.DefaultJobStatus;
 import org.xwiki.job.event.status.JobProgress;
 import org.xwiki.job.event.status.JobStatus;
@@ -61,20 +61,20 @@ public class JobMacroStatusWrapper implements JobStatus, Serializable
     {
         JobMacroStatus status = new JobMacroStatus();
 
-        List<LOGLEVELS> levels = getRequest().getLogLevel();
+        List<SERIALIZE> serialize = getRequest().getSerialize();
 
-        if (levels.contains(LOGLEVELS.PROGRESS)) {
+        if (serialize.contains(SERIALIZE.PROGRESS)) {
             status.progress = getProgress();
         }
 
-        if (levels.contains(LOGLEVELS.LOGS)) {
+        if (serialize.contains(SERIALIZE.LOGS)) {
             status.logs = getLog();
         }
 
         status.error = getError();
         status.state = getState();
 
-        if (levels.contains(LOGLEVELS.REQUEST)) {
+        if (serialize.contains(SERIALIZE.REQUEST)) {
             status.request = getRequest();
         }
 

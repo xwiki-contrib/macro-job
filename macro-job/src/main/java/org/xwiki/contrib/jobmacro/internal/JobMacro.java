@@ -62,7 +62,7 @@ import org.xwiki.security.authorization.Right;
 @Named("job")
 public class JobMacro extends AbstractSignableMacro<JobMacroParameters>
 {
-    enum LOGLEVELS {
+    enum SERIALIZE {
         PROGRESS,
         LOGS,
         REQUEST;
@@ -151,7 +151,7 @@ public class JobMacro extends AbstractSignableMacro<JobMacroParameters>
             try {
                 startJob(parseToPlainText(parameters.getJobType(), context), jobId,
                     asList(parseToPlainText(parameters.getGroupPath(), context)), content, context,
-                    getLogLevelsAsList(parseToPlainText(parameters.getLogLevels(), context)));
+                    getSerializeAsList(parseToPlainText(parameters.getSerialize(), context)));
             } catch (Exception e) {
                 throw new MacroExecutionException("Failed starting job", e);
             }
@@ -164,18 +164,18 @@ public class JobMacro extends AbstractSignableMacro<JobMacroParameters>
     }
 
     private void startJob(String jobType, List<String> jobId, List<String> groupPath, String content,
-                          MacroTransformationContext context, List<LOGLEVELS> logLevels)
+                          MacroTransformationContext context, List<SERIALIZE> serialize)
         throws MacroExecutionException, AccessDeniedException, JobException
     {
         contextualAuthorizationManager.checkAccess(Right.PROGRAM);
 
         this.jobExecutor.execute(JobMacroJob.JOBTYPE,
-            getJobMacroRequest(jobType, jobId, groupPath, content, context, logLevels));
+            getJobMacroRequest(jobType, jobId, groupPath, content, context, serialize));
     }
 
     private JobMacroRequest getJobMacroRequest(String jobType, List<String> jobId, List<String> groupPath,
                                                String content, MacroTransformationContext context,
-                                               List<LOGLEVELS> logLevels)
+                                               List<SERIALIZE> serialize)
     {
         ExecutionContext executionContext = this.execution.getContext();
         ExecutionContext clonedExecutionContext = this.executionContextCloner.copy(executionContext);
@@ -190,7 +190,7 @@ public class JobMacro extends AbstractSignableMacro<JobMacroParameters>
         request.setExecutionContext(clonedExecutionContext);
         request.setTransformationContext(context.clone());
         request.setProperty(PROPERTY_JOB_TYPE, jobType);
-        request.setLogLevel(logLevels);
+        request.setSerialize(serialize);
         return request;
     }
 
@@ -206,20 +206,20 @@ public class JobMacro extends AbstractSignableMacro<JobMacroParameters>
         return printer.toString();
     }
 
-    private List<LOGLEVELS> getLogLevelsAsList(String loglevels) {
-        String[] levels = loglevels.split("\\s*,\\s*");
+    private List<SERIALIZE> getSerializeAsList(String serialize) {
+        String[] levels = serialize.split("\\s*,\\s*");
 
-        List<LOGLEVELS> result = new ArrayList<>(levels.length);
+        List<SERIALIZE> result = new ArrayList<>(levels.length);
         for (String level : levels) {
             try {
-                result.add(LOGLEVELS.valueOf(level.toUpperCase()));
+                result.add(SERIALIZE.valueOf(level.toUpperCase()));
             } catch (Throwable t) {
                 // Ignored
             }
         }
 
         if (result.size() == 0) {
-            result.addAll(Arrays.asList(LOGLEVELS.PROGRESS, LOGLEVELS.LOGS, LOGLEVELS.REQUEST));
+            result.addAll(Arrays.asList(SERIALIZE.PROGRESS, SERIALIZE.LOGS, SERIALIZE.REQUEST));
         }
 
         return result;
