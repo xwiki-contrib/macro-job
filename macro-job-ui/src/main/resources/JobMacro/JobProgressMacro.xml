@@ -198,6 +198,7 @@ require(['jquery', 'JobRunner'], function($, JobRunner) {
   var notifyJobDone = function(job) {
     var jobUI = $(this);
     jobUI.find('.ui-progress').replaceWith(job.message);
+    jobUI.trigger('job:done', job);
   };
 
   var notifyConnectionFailure = function() {
