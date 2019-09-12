@@ -29,7 +29,7 @@
   </parent>
   <groupId>org.xwiki.contrib</groupId>
   <artifactId>macro-job-parent</artifactId>
-  <version>1.4-SNAPSHOT</version>
+  <version>1.4</version>
   <packaging>pom</packaging>
   <name>Job Macro (parent)</name>
   <description>Job Macro allows running asynchronous scripts with progression bar and logs</description>
@@ -41,7 +41,7 @@
     <connection>scm:git:git://github.com/xwiki-contrib/macro-job.git</connection>
     <developerConnection>scm:git:git@github.com:xwiki-contrib/macro-job.git</developerConnection>
     <url>https://github.com/xwiki-contrib/macro-job/tree/master</url>
-    <tag>HEAD</tag>
+    <tag>macro-job-parent-1.4</tag>
   </scm>
   <issueManagement>
     <system>jira</system>
