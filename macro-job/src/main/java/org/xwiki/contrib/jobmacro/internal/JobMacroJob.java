@@ -26,7 +26,10 @@ import javax.script.ScriptContext;
 
 import org.apache.velocity.VelocityContext;
 import org.xwiki.component.annotation.Component;
+import org.xwiki.container.Container;
+import org.xwiki.container.servlet.ServletRequest;
 import org.xwiki.context.Execution;
+import org.xwiki.context.ExecutionContext;
 import org.xwiki.job.AbstractJob;
 import org.xwiki.job.GroupedJob;
 import org.xwiki.job.Job;
@@ -42,6 +45,8 @@ import org.xwiki.script.ScriptContextManager;
 import org.xwiki.velocity.VelocityManager;
 
 import java.util.Date;
+
+import com.xpn.xwiki.XWikiContext;
 
 /**
  * Job executed by the JobMacro.
@@ -86,6 +91,8 @@ public class JobMacroJob extends AbstractJob<JobMacroRequest, JobMacroStatusWrap
     @Inject
     private MacroContentParser contentParser;
 
+    @Inject
+    private Container container;
 
     @Override
     public JobGroupPath getGroupPath()
@@ -113,6 +120,11 @@ public class JobMacroJob extends AbstractJob<JobMacroRequest, JobMacroStatusWrap
     @Override
     protected void runInternal() throws Exception
     {
+        // Restore the request before executing the content
+        ExecutionContext executionContext = request.getExecutionContext();
+        XWikiContext context = (XWikiContext) executionContext.getProperty(XWikiContext.EXECUTIONCONTEXT_KEY);
+        container.setRequest(new ServletRequest(context.getRequest()));
+
         ScriptContext scontext = scriptContextManager.getScriptContext();
         scontext.setAttribute(JOB_ID_VARIABLE, this.request.getId(), ScriptContext.ENGINE_SCOPE);
         scontext.setAttribute(GROUP_PATH_VARIABLE, this.request.getGroupPath(), ScriptContext.ENGINE_SCOPE);
