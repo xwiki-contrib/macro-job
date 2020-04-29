@@ -23,61 +23,33 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.xwiki.commons</groupId>
-    <artifactId>xwiki-commons-pom</artifactId>
-    <version>7.4.4</version>
+    <groupId>org.xwiki.contrib</groupId>
+    <artifactId>parent-platform</artifactId>
+    <version>7.4-15</version>
   </parent>
-  <groupId>org.xwiki.contrib</groupId>
   <artifactId>macro-job-parent</artifactId>
   <version>1.4.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Job Macro (parent)</name>
   <description>Job Macro allows running asynchronous scripts with progression bar and logs</description>
   <properties>
-    <platform.version>${commons.version}</platform.version>
-    <rendering.version>${commons.version}</rendering.version>
+    <xwiki.issueManagement.jira.id>JOBMACRO</xwiki.issueManagement.jira.id>
   </properties>
+
   <scm>
     <connection>scm:git:git://github.com/xwiki-contrib/macro-job.git</connection>
     <developerConnection>scm:git:git@github.com:xwiki-contrib/macro-job.git</developerConnection>
     <url>https://github.com/xwiki-contrib/macro-job/tree/master</url>
     <tag>HEAD</tag>
   </scm>
-  <issueManagement>
-    <system>jira</system>
-    <url>http://jira.xwiki.org/browse/JOBMACRO</url>
-  </issueManagement>
+
   <developers>
     <developer>
       <id>dgervalle</id>
       <name>Denis Gervalle</name>
     </developer>
   </developers>
-  <build>
-    <!-- Needed to add support for the XAR packaging -->
-    <extensions>
-      <extension>
-        <groupId>org.xwiki.commons</groupId>
-        <artifactId>xwiki-commons-tool-xar-handlers</artifactId>
-        <version>${commons.version}</version>
-      </extension>
-    </extensions>
-    <plugins>
-      <!-- The XAR packaging uses the XAR plugin and thus we need to define what version to use -->
-      <plugin>
-        <groupId>org.xwiki.commons</groupId>
-        <artifactId>xwiki-commons-tool-xar-plugin</artifactId>
-        <version>${commons.version}</version>
-      </plugin>
-    </plugins>
-  </build>
-  <distributionManagement>
-    <repository>
-      <id>xwiki-staging</id>
-      <name>XWiki Staging Repository</name>
-      <url>http://nexus.xwiki.org/nexus/service/local/staging/deploy/maven2/</url>
-    </repository>
-  </distributionManagement>
+
   <modules>
     <module>macro-job</module>
     <module>macro-job-ui</module>

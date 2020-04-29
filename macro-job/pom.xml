@@ -48,7 +48,7 @@
     <dependency>
       <groupId>org.xwiki.platform</groupId>
       <artifactId>xwiki-platform-rendering-signature</artifactId>
-      <version>${rendering.version}</version>
+      <version>${platform.version}</version>
     </dependency>
     <dependency>
       <groupId>org.xwiki.platform</groupId>
@@ -66,4 +66,25 @@
       <type>xar</type>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <executions>
+          <execution>
+            <!-- Specify the "default" execution id so that the "blocker" one is always executed -->
+            <id>default</id>
+            <configuration>
+              <excludes>
+                org/xwiki/contrib/jobmacro/internal/JobMacroStatusWrapper.java,
+                org/xwiki/contrib/jobmacro/internal/JobMacroJob.java
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

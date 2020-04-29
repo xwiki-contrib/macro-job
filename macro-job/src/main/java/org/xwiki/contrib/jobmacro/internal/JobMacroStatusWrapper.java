@@ -20,6 +20,13 @@
 
 package org.xwiki.contrib.jobmacro.internal;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+
 import org.xwiki.contrib.jobmacro.internal.JobMacro.SERIALIZE;
 import org.xwiki.job.DefaultJobStatus;
 import org.xwiki.job.event.status.JobProgress;
@@ -30,18 +37,17 @@ import org.xwiki.logging.LoggerManager;
 import org.xwiki.logging.event.LogEvent;
 import org.xwiki.observation.ObservationManager;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-
+/**
+ * Contains information about the running job.
+ * 
+ * @version $Id$
+ */
 public class JobMacroStatusWrapper implements JobStatus, Serializable
 {
     private static final long serialVersionUID = 1L;
 
     private final transient DefaultJobStatus<JobMacroRequest> jobStatus;
+
     private transient Throwable error;
 
     /**
@@ -52,7 +58,8 @@ public class JobMacroStatusWrapper implements JobStatus, Serializable
      * @param loggerManager the logger manager
      * @param parentJobStatus the parent job status, if any
      */
-    public JobMacroStatusWrapper(JobMacroRequest request, ObservationManager observationManager, LoggerManager loggerManager, JobStatus parentJobStatus)
+    public JobMacroStatusWrapper(JobMacroRequest request, ObservationManager observationManager,
+        LoggerManager loggerManager, JobStatus parentJobStatus)
     {
         this.jobStatus = new DefaultJobStatus<>(request, parentJobStatus, observationManager, loggerManager);
     }

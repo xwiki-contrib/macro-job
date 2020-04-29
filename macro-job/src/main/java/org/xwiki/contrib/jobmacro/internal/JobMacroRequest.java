@@ -20,14 +20,14 @@
 
 package org.xwiki.contrib.jobmacro.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.xwiki.context.ExecutionContext;
 import org.xwiki.contrib.jobmacro.internal.JobMacro.SERIALIZE;
 import org.xwiki.job.AbstractRequest;
 import org.xwiki.job.JobGroupPath;
 import org.xwiki.rendering.transformation.MacroTransformationContext;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Job Request for the {@link JobMacroJob}.
@@ -58,6 +58,7 @@ public class JobMacroRequest extends AbstractRequest
 
     /**
      * Set the content to parse and execute.
+     * 
      * @param content the content
      */
     public void setContent(String content)
@@ -75,6 +76,7 @@ public class JobMacroRequest extends AbstractRequest
 
     /**
      * Set the group path. Set to null for a single job.
+     * 
      * @param groupPath the group path.
      */
     public void setGroupPath(JobGroupPath groupPath)
@@ -92,6 +94,7 @@ public class JobMacroRequest extends AbstractRequest
 
     /**
      * Set the execution context used for executing the job.
+     * 
      * @param executionContext the execution context
      */
     public void setExecutionContext(ExecutionContext executionContext)
@@ -109,6 +112,7 @@ public class JobMacroRequest extends AbstractRequest
 
     /**
      * Set the macro transformation context for rendering the macro content.
+     * 
      * @param transformationContext the macro transformation context
      */
     public void setTransformationContext(MacroTransformationContext transformationContext)
@@ -117,7 +121,7 @@ public class JobMacroRequest extends AbstractRequest
     }
 
     /**
-     * Return the logging level.
+     * @return the logging level.
      */
     public List<SERIALIZE> getSerialize()
     {
@@ -126,6 +130,7 @@ public class JobMacroRequest extends AbstractRequest
 
     /**
      * Set the logging level.
+     * 
      * @param serialize a collection of object enabled for serialization.
      */
     public void setSerialize(List<SERIALIZE> serialize)
@@ -135,6 +140,7 @@ public class JobMacroRequest extends AbstractRequest
 
     /**
      * Enable logging of the given information.
+     * 
      * @param serialize the object to serialize
      * @return true if the level has been enabled, false if it was already enabled
      */
@@ -152,6 +158,7 @@ public class JobMacroRequest extends AbstractRequest
 
     /**
      * Disable logging of the given information.
+     * 
      * @param serialize the object to remove from serialization
      * @return true if the level has been activated, false if it was already active
      */

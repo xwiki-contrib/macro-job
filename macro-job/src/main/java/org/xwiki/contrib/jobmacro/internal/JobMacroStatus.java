@@ -20,12 +20,17 @@
 
 package org.xwiki.contrib.jobmacro.internal;
 
+import java.util.Date;
+
 import org.xwiki.job.event.status.JobProgress;
 import org.xwiki.job.event.status.JobStatus;
 import org.xwiki.logging.LogQueue;
 
-import java.util.Date;
-
+/**
+ * Contains information about the running job.
+ * 
+ * @version $Id$
+ */
 public class JobMacroStatus
 {
     /**
