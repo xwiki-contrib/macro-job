@@ -126,6 +126,14 @@ public class JobMacroJob extends AbstractJob<JobMacroRequest, JobMacroStatusWrap
         container.setRequest(new ServletRequest(context.getRequest()));
 
         ScriptContext scontext = scriptContextManager.getScriptContext();
+
+        // Clean the script context from known thread unsafe objects or object referencing the wrong XWikiContext
+        scontext.removeAttribute("util", ScriptContext.ENGINE_SCOPE);
+        scontext.removeAttribute("xwiki", ScriptContext.ENGINE_SCOPE);
+        scontext.removeAttribute("request", ScriptContext.ENGINE_SCOPE);
+        scontext.removeAttribute("response", ScriptContext.ENGINE_SCOPE);
+        scontext.removeAttribute("xcontext", ScriptContext.ENGINE_SCOPE);
+
         scontext.setAttribute(JOB_ID_VARIABLE, this.request.getId(), ScriptContext.ENGINE_SCOPE);
         scontext.setAttribute(GROUP_PATH_VARIABLE, this.request.getGroupPath(), ScriptContext.ENGINE_SCOPE);
         scontext.setAttribute(PROGRESS_VARIABLE, this.progressManager, ScriptContext.ENGINE_SCOPE);
