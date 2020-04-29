@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.xwiki.contrib</groupId>
     <artifactId>macro-job-parent</artifactId>
-    <version>1.4.1</version>
+    <version>1.4.2-SNAPSHOT</version>
   </parent>
   <artifactId>macro-job-ui</artifactId>
   <name>Macro Job - UI</name>
