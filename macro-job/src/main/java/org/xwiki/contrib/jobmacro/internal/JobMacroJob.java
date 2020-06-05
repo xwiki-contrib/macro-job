@@ -221,6 +221,10 @@ public class JobMacroJob extends AbstractJob<JobMacroRequest, JobMacroStatusWrap
             // Store the job status
             try {
                 if (this.request.getId() != null) {
+                    // Get rid of things which should not be stored and could take a lot of memory in the status cache
+                    this.status.getRequest().setExecutionContext(null);
+                    this.status.getRequest().setTransformationContext(null);
+
                     this.store.storeAsync(this.status);
                 }
             } catch (Throwable t) {
