@@ -24,7 +24,7 @@
   <parent>
     <artifactId>macro-job-parent</artifactId>
     <groupId>org.xwiki.contrib</groupId>
-    <version>1.4.2-SNAPSHOT</version>
+    <version>1.5</version>
   </parent>
   <artifactId>macro-job</artifactId>
   <name>Job Macro</name>
