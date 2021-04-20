@@ -33,6 +33,11 @@
     <!-- Name to display by the Extension Manager -->
     <xwiki.extension.name>Job Macro</xwiki.extension.name>
     <xwiki.extension.category>macro</xwiki.extension.category>
+
+    <!-- Components -->
+    <xwiki.extension.components>
+      org.xwiki.rendering.macro.Macro/job
+    </xwiki.extension.components>
   </properties>
   <dependencies>
     <dependency>
