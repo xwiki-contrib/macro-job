@@ -27,8 +27,9 @@ import org.xwiki.job.event.status.JobStatus;
 import org.xwiki.logging.LogQueue;
 
 /**
- * Contains information about the running job.
- * 
+ * The status of a job triggered run in the job macro.
+ *
+ * @since 1.0
  * @version $Id$
  */
 public class JobMacroStatus

@@ -40,6 +40,7 @@ import org.xwiki.observation.ObservationManager;
 /**
  * Contains information about the running job.
  * 
+ * @since 1.0
  * @version $Id$
  */
 public class JobMacroStatusWrapper implements JobStatus, Serializable
@@ -157,36 +158,60 @@ public class JobMacroStatusWrapper implements JobStatus, Serializable
         return jobStatus.getLog(logLevel);
     }
 
+    /**
+     * @param date the start date
+     * @see DefaultJobStatus#setStartDate(Date)
+     */
     public void setStartDate(Date date)
     {
         jobStatus.setStartDate(date);
     }
 
+    /**
+     * @param state the state
+     * @see DefaultJobStatus#setState(State)
+     */
     public void setState(State state)
     {
         jobStatus.setState(state);
     }
 
+    /**
+     * @see DefaultJobStatus#startListening()
+     */
     public void startListening()
     {
         jobStatus.startListening();
     }
 
+    /**
+     * @param date the end date
+     * @see DefaultJobStatus#setEndDate(Date) 
+     */
     public void setEndDate(Date date)
     {
         jobStatus.setEndDate(date);
     }
 
+    /**
+     * @see DefaultJobStatus#stopListening()
+     */
     public void stopListening()
     {
         jobStatus.stopListening();
     }
 
+    /**
+     * @return the last error
+     */
     public Throwable getError()
     {
         return this.error;
     }
 
+    /**
+     * @param error the last error of the job
+     */
     public void setError(Throwable error)
     {
         this.error = error;

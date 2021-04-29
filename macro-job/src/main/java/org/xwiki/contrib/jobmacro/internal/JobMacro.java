@@ -29,6 +29,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 import org.xwiki.component.annotation.Component;
 import org.xwiki.context.Execution;
@@ -60,9 +61,11 @@ import org.xwiki.security.authorization.Right;
  */
 @Component
 @Named("job")
+@Singleton
 public class JobMacro extends AbstractSignableMacro<JobMacroParameters>
 {
-    enum SERIALIZE {
+    enum SERIALIZE
+    {
         PROGRESS,
         LOGS,
         REQUEST;
@@ -206,7 +209,8 @@ public class JobMacro extends AbstractSignableMacro<JobMacroParameters>
         return printer.toString();
     }
 
-    private List<SERIALIZE> getSerializeAsList(String serialize) {
+    private List<SERIALIZE> getSerializeAsList(String serialize)
+    {
         String[] levels = serialize.split("\\s*,\\s*");
 
         List<SERIALIZE> result = new ArrayList<>(levels.length);

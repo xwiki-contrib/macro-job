@@ -71,7 +71,8 @@ public class JobMacroJob extends AbstractJob<JobMacroRequest, JobMacroStatusWrap
 
     private static final EndTranslationMarker LOG_END_ID = new EndTranslationMarker("job.log.endWithId");
 
-    private static final TranslationMarker LOG_STATUS_STORE_FAILED = new TranslationMarker("job.log.status.store.failed");
+    private static final TranslationMarker LOG_STATUS_STORE_FAILED =
+        new TranslationMarker("job.log.status.store.failed");
 
     private static final String JOB_ID_VARIABLE = "jobId";
 
