@@ -30,6 +30,7 @@ import org.xwiki.container.Container;
 import org.xwiki.container.servlet.ServletRequest;
 import org.xwiki.context.Execution;
 import org.xwiki.context.ExecutionContext;
+import org.xwiki.context.ExecutionContextInitializer;
 import org.xwiki.job.AbstractJob;
 import org.xwiki.job.GroupedJob;
 import org.xwiki.job.Job;
@@ -95,6 +96,10 @@ public class JobMacroJob extends AbstractJob<JobMacroRequest, JobMacroStatusWrap
     @Inject
     private Container container;
 
+    @Inject
+    @Named("threadclassloader")
+    private ExecutionContextInitializer classLoaderInitializer;
+
     @Override
     public JobGroupPath getGroupPath()
     {
@@ -123,6 +128,8 @@ public class JobMacroJob extends AbstractJob<JobMacroRequest, JobMacroStatusWrap
     {
         // Restore the request before executing the content
         ExecutionContext executionContext = request.getExecutionContext();
+        // the class loader is thread sensitive, thus it needs to be initialized here (in the thread of the job)
+        classLoaderInitializer.initialize(executionContext);
         XWikiContext context = (XWikiContext) executionContext.getProperty(XWikiContext.EXECUTIONCONTEXT_KEY);
         container.setRequest(new ServletRequest(context.getRequest()));
 

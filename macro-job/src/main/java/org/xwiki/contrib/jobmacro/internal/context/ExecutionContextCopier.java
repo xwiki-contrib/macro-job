@@ -47,6 +47,15 @@ public class ExecutionContextCopier implements Copier<ExecutionContext>
     /** Velocity templates key. */
     private static final String VELOCITY_TEMPLATES = "velocity.templates";
 
+    /** Key used to store the original class loader in the Execution Context. */
+    private static final String EXECUTION_CONTEXT_ORIG_CLASSLOADER_KEY = "originalClassLoader";
+
+    /** Key used to store the class loader used by scripts in the Execution Context, see {@link #execution}. */
+    private static final String EXECUTION_CONTEXT_CLASSLOADER_KEY = "scriptClassLoader";
+
+    /** Key under which the jar params used for the last macro execution are cached in the Execution Context. */
+    private static final String EXECUTION_CONTEXT_JARPARAMS_KEY = "scriptJarParams";
+
     @Inject
     private ExecutionContextManager executionContextManager;
 
@@ -81,6 +90,12 @@ public class ExecutionContextCopier implements Copier<ExecutionContext>
             // body of the job macro - it's thread unsafe, if kept it will be manipulated by caller thread and by job
             // thread at the same time
             clonedExecutionContext.removeProperty(VELOCITY_TEMPLATES);
+
+            // clean up the class loaders from the execution context, if any so that 2 threads don't share the same
+            // class loaders
+            clonedExecutionContext.removeProperty(EXECUTION_CONTEXT_ORIG_CLASSLOADER_KEY);
+            clonedExecutionContext.removeProperty(EXECUTION_CONTEXT_CLASSLOADER_KEY);
+            clonedExecutionContext.removeProperty(EXECUTION_CONTEXT_JARPARAMS_KEY);
 
             return clonedExecutionContext;
         } catch (Exception e) {
