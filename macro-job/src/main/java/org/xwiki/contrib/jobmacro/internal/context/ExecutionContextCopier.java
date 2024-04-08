@@ -44,6 +44,9 @@ import com.xpn.xwiki.XWikiContext;
 @Singleton
 public class ExecutionContextCopier implements Copier<ExecutionContext>
 {
+    /** Velocity templates key. */
+    private static final String VELOCITY_TEMPLATES = "velocity.templates";
+
     @Inject
     private ExecutionContextManager executionContextManager;
 
@@ -74,6 +77,10 @@ public class ExecutionContextCopier implements Copier<ExecutionContext>
             // code need the VC.
             clonedExecutionContext.removeProperty(VelocityExecutionContextInitializer.VELOCITY_CONTEXT_ID);
             this.velocityExecutionContextInitializer.initialize(clonedExecutionContext);
+            // remove velocity.templates also from the execution context, to be re-filled in with the templates from the
+            // body of the job macro - it's thread unsafe, if kept it will be manipulated by caller thread and by job
+            // thread at the same time
+            clonedExecutionContext.removeProperty(VELOCITY_TEMPLATES);
 
             return clonedExecutionContext;
         } catch (Exception e) {
