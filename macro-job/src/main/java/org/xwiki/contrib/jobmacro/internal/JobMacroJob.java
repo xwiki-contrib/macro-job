@@ -20,6 +20,8 @@
 
 package org.xwiki.contrib.jobmacro.internal;
 
+import java.util.Date;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.script.ScriptContext;
@@ -32,8 +34,8 @@ import org.xwiki.context.Execution;
 import org.xwiki.context.ExecutionContext;
 import org.xwiki.context.ExecutionContextInitializer;
 import org.xwiki.job.AbstractJob;
+import org.xwiki.job.DefaultJobStatus;
 import org.xwiki.job.GroupedJob;
-import org.xwiki.job.Job;
 import org.xwiki.job.JobGroupPath;
 import org.xwiki.job.event.JobFinishedEvent;
 import org.xwiki.job.event.JobStartedEvent;
@@ -45,8 +47,6 @@ import org.xwiki.rendering.macro.MacroContentParser;
 import org.xwiki.script.ScriptContextManager;
 import org.xwiki.velocity.VelocityManager;
 
-import java.util.Date;
-
 import com.xpn.xwiki.XWikiContext;
 
 /**
@@ -56,7 +56,7 @@ import com.xpn.xwiki.XWikiContext;
  */
 @Component
 @Named(JobMacroJob.JOBTYPE)
-public class JobMacroJob extends AbstractJob<JobMacroRequest, JobMacroStatusWrapper>
+public class JobMacroJob extends AbstractJob<JobMacroRequest, DefaultJobStatus<JobMacroRequest>>
     implements GroupedJob
 {
     /**
@@ -154,17 +154,10 @@ public class JobMacroJob extends AbstractJob<JobMacroRequest, JobMacroStatusWrap
         this.contentParser.parse(request.getContent(), request.getTransformationContext(), true, false);
     }
 
-    @Override
-    protected JobMacroStatusWrapper createNewStatus(JobMacroRequest request)
-    {
-        Job currentJob = this.jobContext.getCurrentJob();
-        JobStatus currentJobStatus = currentJob != null ? currentJob.getStatus() : null;
-        return new JobMacroStatusWrapper(request, this.observationManager, this.loggerManager, currentJobStatus);
-    }
-
     /**
      * Called when the job is starting.
      */
+    @Override
     protected void jobStarting()
     {
         this.jobContext.pushCurrentJob(this);
@@ -191,6 +184,7 @@ public class JobMacroJob extends AbstractJob<JobMacroRequest, JobMacroStatusWrap
      *
      * @param error the exception throw during execution of the job
      */
+    @Override
     protected void jobFinished(Throwable error)
     {
         this.lock.lock();
