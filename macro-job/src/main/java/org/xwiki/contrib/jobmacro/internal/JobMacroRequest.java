@@ -122,7 +122,9 @@ public class JobMacroRequest extends AbstractRequest
 
     /**
      * @return the logging level.
+     * @deprecated since 2.2.0, it's not taken into account anymore
      */
+    @Deprecated
     public List<SERIALIZE> getSerialize()
     {
         return serialize;
@@ -132,7 +134,9 @@ public class JobMacroRequest extends AbstractRequest
      * Set the logging level.
      * 
      * @param serialize a collection of object enabled for serialization.
+     * @deprecated since 2.2.0, it's not taken into account anymore
      */
+    @Deprecated
     public void setSerialize(List<SERIALIZE> serialize)
     {
         this.serialize = serialize;
@@ -143,7 +147,9 @@ public class JobMacroRequest extends AbstractRequest
      * 
      * @param serialize the object to serialize
      * @return true if the level has been enabled, false if it was already enabled
+     * @deprecated since 2.2.0, it's not taken into account anymore
      */
+    @Deprecated
     public boolean enableSerialize(SERIALIZE serialize)
     {
         if (this.serialize == null) {
@@ -161,7 +167,9 @@ public class JobMacroRequest extends AbstractRequest
      * 
      * @param serialize the object to remove from serialization
      * @return true if the level has been activated, false if it was already active
+     * @deprecated since 2.2.0, it's not taken into account anymore
      */
+    @Deprecated
     public boolean disableSerialize(SERIALIZE serialize)
     {
         if (serialize != null && this.serialize != null && this.serialize.contains(serialize)) {

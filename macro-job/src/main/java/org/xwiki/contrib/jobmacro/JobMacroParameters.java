@@ -22,6 +22,7 @@ package org.xwiki.contrib.jobmacro;
 
 import org.xwiki.contrib.jobmacro.internal.JobMacro;
 import org.xwiki.properties.annotation.PropertyDescription;
+import org.xwiki.properties.annotation.PropertyDisplayHidden;
 import org.xwiki.properties.annotation.PropertyMandatory;
 
 /**
@@ -81,14 +82,6 @@ public class JobMacroParameters
     }
 
     /**
-     * @return the serialize parameter
-     */
-    public String getSerialize()
-    {
-        return this.serialize;
-    }
-
-    /**
      * @return true if the job should be start if it is not running.
      */
     public String getStart()
@@ -125,20 +118,35 @@ public class JobMacroParameters
     }
 
     /**
-     * @param serialize the list of object to serialize in the status as a lowercase comma separated list
-     */
-    @PropertyDescription("Elements to serialize in the logs as a comma separated list (progress, logs, request)")
-    public void setSerialize(String serialize)
-    {
-        this.serialize = serialize;
-    }
-
-    /**
      * @param start if true, restart the job even if existing logs exists.
      */
     @PropertyDescription("Start the job if it is not running. Default to false. (Wiki syntax supported)")
     public void setStart(String start)
     {
         this.start = start;
+    }
+
+    // Deprecated
+
+    /**
+     * @return the serialize parameter
+     * @deprecated since 2.2.0, it's not taken into account anymore
+     */
+    @Deprecated
+    public String getSerialize()
+    {
+        return this.serialize;
+    }
+
+    /**
+     * @param serialize the list of object to serialize in the status as a lowercase comma separated list
+     * @deprecated since 2.2.0, it's not taken into account anymore
+     */
+    @PropertyDescription("Elements to serialize in the logs as a comma separated list (progress, logs, request)")
+    @PropertyDisplayHidden
+    @Deprecated
+    public void setSerialize(String serialize)
+    {
+        this.serialize = serialize;
     }
 }
