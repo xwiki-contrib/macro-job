@@ -54,4 +54,26 @@
     <module>macro-job</module>
     <module>macro-job-ui</module>
   </modules>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.revapi</groupId>
+        <artifactId>revapi-maven-plugin</artifactId>
+        <configuration>
+          <analysisConfiguration>
+            <revapi.ignore>
+              <item>
+                <code>java.annotation.added</code>
+                <old>method void org.xwiki.contrib.jobmacro.JobMacroParameters::setSerialize(java.lang.String)</old>
+                <new>method void org.xwiki.contrib.jobmacro.JobMacroParameters::setSerialize(java.lang.String)</new>
+                <annotation>@org.xwiki.properties.annotation.PropertyDisplayHidden</annotation>
+              </item>
+            </revapi.ignore>
+          </analysisConfiguration>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>
