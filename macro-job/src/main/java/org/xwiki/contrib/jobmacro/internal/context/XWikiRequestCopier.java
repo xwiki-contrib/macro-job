@@ -52,6 +52,7 @@ public class XWikiRequestCopier implements Copier<XWikiRequest>
         dummyRequest.setContextPath(originalRequest.getContextPath());
         dummyRequest.setrequestURL(originalRequest.getRequestURL());
         dummyRequest.setServerName(originalRequest.getServerName());
+        dummyRequest.setSession(originalRequest.getSession());
 
         return new XWikiServletRequest(dummyRequest);
     }
