@@ -131,7 +131,7 @@ public class JobMacro extends AbstractSignableMacro<JobMacroParameters>
     {
         super("Job", DESCRIPTION, new DefaultContentDescriptor(CONTENT_DESCRIPTION), JobMacroParameters.class);
 
-        //setDefaultCategory(DEFAULT_CATEGORY_DEVELOPMENT);
+        setDefaultCategory(DEFAULT_CATEGORY_DEVELOPMENT);
     }
 
     @Override
