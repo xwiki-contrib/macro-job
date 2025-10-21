@@ -51,8 +51,8 @@
   </developers>
 
   <modules>
-    <module>macro-job</module>
     <module>macro-job-ui</module>
+    <module>macro-job</module>
   </modules>
 
   <build>
